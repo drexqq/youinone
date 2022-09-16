@@ -1,6 +1,6 @@
 function Footer() {
     return (
-        <div>Footer Component</div>
+        <footer>Footer Component</footer>
     )
 }
 export default Footer

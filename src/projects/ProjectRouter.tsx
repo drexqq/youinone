@@ -9,20 +9,16 @@ import TodoList from "./TodoList/Todolist"
 
 function ProjectRouter () {
     return (
-        <>
-            <div>
-            <BrowserRouter>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<Intro />}></Route>
-                    <Route path="/todo" element={<TodoList />}></Route>
-                    <Route path="/memo" element={<Memo />}></Route>
-                    <Route path="*" element={<NotFound />}></Route>
-                </Routes>
-                <Footer />
-            </BrowserRouter>
-            </div>
-        </>
+        <BrowserRouter>
+            <Header />
+            <Routes>
+                <Route path="/" element={<Intro />}></Route>
+                <Route path="/todo" element={<TodoList />}></Route>
+                <Route path="/memo" element={<Memo />}></Route>
+                <Route path="*" element={<NotFound />}></Route>
+            </Routes>
+            <Footer />
+        </BrowserRouter>
     )
 }
 
