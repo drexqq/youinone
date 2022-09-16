@@ -1,9 +1,4 @@
-// const ProjectTitle = ( name: string ) => {
-
-//     return (
-//         <h2>{name}</h2>
-//     )
-// }
+import React from 'react';
 interface IProjectTitle {
     name: string
 }
