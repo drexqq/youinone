@@ -1,11 +1,11 @@
-// import GlobalStyle from './styles/GlobalStyle';
+import GlobalStyle from './styles/GlobalStyle';
 import ProjectRouter from './projects/ProjectRouter'
 
 function App() {
   
   return (
     <>
-      {/* <GlobalStyle/ > */}
+      <GlobalStyle/ >
       <ProjectRouter />
     </>
   )

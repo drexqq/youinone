@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { Layout } from "../styles/LayoutStyle"
 import Intro from "../components/Intro";
 import NotFound from "../components/NotFound"
 import Header from "../components/Header"
@@ -12,14 +11,16 @@ function ProjectRouter () {
 
     return (
         <BrowserRouter>
-            <Header />
-            <Routes>
-                <Route path="/" element={<Intro />}></Route>
-                <Route path="/todo" element={<TodoList />}></Route>
-                <Route path="/memo" element={<Memo />}></Route>
-                <Route path="*" element={<NotFound />}></Route>
-            </Routes>
-            <Footer />
+            <Layout>
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Intro />}></Route>
+                    <Route path="/todo" element={<TodoList />}></Route>
+                    <Route path="/memo" element={<Memo />}></Route>
+                    <Route path="*" element={<NotFound />}></Route>
+                </Routes>
+                <Footer />
+            </Layout>
         </BrowserRouter>
     )
 }
