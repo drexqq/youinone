@@ -10,39 +10,9 @@ import TodoList from "./TodoList/Todolist"
 
 function ProjectRouter () {
 
-    function addToHomeScreen() {
-      alert("Down Click")
-      //@ts-ignore
-      window.promptEvent.prompt();
-      //@ts-ignore
-      window.promptEvent.userChoice.then((choiceResult: any) => {
-        if (choiceResult.outcome === 'accepted') {
-          alert("Ok")
-          console.log('User accepted the A2HS prompt')
-        } else {
-          alert("No")
-          console.log('User dismissed the A2HS prompt')
-        }
-      })
-    }
-  
-    useEffect(() => {
-        console.log("Listening for Install prompt");
-        alert("beforeinstallprompt")
-        window.addEventListener("beforeinstallprompt", (e) => {
-          e.preventDefault();
-          //@ts-ignore
-          window.promptEvent = e;
-        });
-      }, []);
-
     return (
         <BrowserRouter>
             <Header />
-            <div
-                style={{margin:"40px"}}
-                onClick={addToHomeScreen}
-            >DownLoad Test Button</div>
             <Routes>
                 <Route path="/" element={<Intro />}></Route>
                 <Route path="/todo" element={<TodoList />}></Route>

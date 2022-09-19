@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-// import styled from "styled-components/macro";
+import { useEffect, useState } from "react";
+import styled from "styled-components";
 import ProjectTitle from "../../components/ProjectTitle";
 
 interface ITodoItem {
@@ -41,10 +41,10 @@ function TodoList() {
             <ul>
                 {todos.map(({id, content, date, isChecked}: ITodoItem) => {
                     return (
-                        <li key={id}>
+                        <TodoItem key={id}>
                             <p className="check">
                                 <i className={isChecked ? "ri-checkbox-line" : "ri-checkbox-blank-line"} onClick={() => onClickChecked(id)}></i>
-                                <input
+                                <CheckBox
                                     className="input-checkbox"
                                     type="checkbox"
                                     defaultChecked={isChecked}
@@ -52,7 +52,7 @@ function TodoList() {
                             </p>
                             <p className="content"><input type="text" defaultValue={content}/></p>
                             <p className="date">{ date.toISOString().split('T')[0] }</p>
-                        </li>
+                        </TodoItem>
                     )
                 })}
             </ul>
@@ -60,15 +60,15 @@ function TodoList() {
     )
 }
 
-// const TodoItem = styled.li`
-//     display: flex;
-//     align-items: center;
-//     .check {}
-//     .content {}
-//     .date {}
-// `
-// const CheckBox = styled.input`
-//     display: none;
-// `
+const TodoItem = styled.li`
+    display: flex;
+    align-items: center;
+    .check {}
+    .content {}
+    .date {}
+`
+const CheckBox = styled.input`
+    display: none;
+`
 
 export default TodoList
