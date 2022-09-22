@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { FOOTER_HEIGHT } from '../consts/DesignConst';
 
 import IconTodoActive from '../assets/icons/todo-active.svg';
 import IconMemo from '../assets/icons/memo.svg';
@@ -42,7 +43,7 @@ export default Footer;
 const FooterLayout = styled.footer`
   display: flex;
   border-top: 1px solid #eee;
-  height: 90px;
+  height: ${FOOTER_HEIGHT}px;
 `;
 
 const FooterButton = styled(Link)`
