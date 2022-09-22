@@ -5,7 +5,7 @@ import IconDelete from '../../assets/todolist/delete.svg';
 import TodoYet from '../../assets/todolist/todo-yet.svg';
 import TodoDone from '../../assets/todolist/todo-done.svg';
 
-import Flicking, { Camera, ViewportSlot } from '@egjs/react-flicking';
+import Flicking from '@egjs/react-flicking';
 import '@egjs/react-flicking/dist/flicking.css';
 
 interface ITodoItem {
@@ -15,7 +15,7 @@ interface ITodoItem {
 }
 
 function TodoList() {
-  let dummyTodos = [
+  const dummyTodos = [
     { id: 1, content: 'test1', isChecked: false },
     { id: 2, content: 'test2', isChecked: false },
     { id: 3, content: 'test3', isChecked: true },
@@ -71,7 +71,10 @@ function TodoList() {
               >
                 <TodoItem>
                   <div onClick={() => onClickChecked(id)}>
-                    <IconBox src={isChecked ? TodoDone : TodoYet} alt="todo-yet" />
+                    <IconBox
+                      src={isChecked ? TodoDone : TodoYet}
+                      alt="todo-yet"
+                    />
                     <CheckBox
                       className="input-checkbox"
                       type="checkbox"
@@ -79,7 +82,11 @@ function TodoList() {
                     />
                   </div>
                   <div className="content">
-                    <input type="text" defaultValue={content} readOnly={isChecked ? true : false} />
+                    <input
+                      type="text"
+                      defaultValue={content}
+                      readOnly={isChecked ? true : false}
+                    />
                   </div>
                 </TodoItem>
                 <DeleteBox

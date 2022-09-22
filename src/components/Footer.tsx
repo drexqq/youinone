@@ -1,40 +1,64 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { FOOTER_HEIGHT } from '../consts/DesignConst';
 
-import IconTodoActive from '../assets/icons/todo-active.svg';
+import IconTodo from '../assets/icons/todo.svg';
 import IconMemo from '../assets/icons/memo.svg';
-import IconMemoIcon from '../assets/icons/memo-active.svg';
 import IconWeather from '../assets/icons/weather.svg';
-import IconWeatherActive from '../assets/icons/weather-active.svg';
 import IconTrans from '../assets/icons/translate.svg';
-import IconTransActive from '../assets/icons/translate-active.svg';
 import IconAll from '../assets/icons/all.svg';
+import IconTodoActive from '../assets/icons/todo-active.svg';
+import IconMemoActive from '../assets/icons/memo-active.svg';
+import IconWeatherActive from '../assets/icons/weather-active.svg';
+import IconTransActive from '../assets/icons/translate-active.svg';
 import IconAllActive from '../assets/icons/all-active.svg';
 
 function Footer() {
+  const [page, setPage] = useState<string>('');
+  const location = useLocation();
+  const path = location.pathname.replace('/', '');
+  const pageList = [
+    {
+      path: '/todo',
+      icon: page === 'todo' ? IconTodoActive : IconTodo,
+      text: '할일',
+    },
+    {
+      path: '/memo',
+      icon: page === 'memo' ? IconMemoActive : IconMemo,
+      text: '메모',
+    },
+    {
+      path: '/weather',
+      icon: page === 'weather' ? IconWeatherActive : IconWeather,
+      text: '날씨',
+    },
+    {
+      path: '/translate',
+      icon: page === 'translate' ? IconTransActive : IconTrans,
+      text: '번역',
+    },
+    {
+      path: '/all',
+      icon: page === 'all' ? IconAllActive : IconAll,
+      text: '전체',
+    },
+  ];
+  useEffect(() => {
+    setPage(path);
+  }, [location]);
   return (
     <FooterLayout>
-      <FooterButton to="/todo">
-        <img src={IconTodoActive} alt="todolist" />
-        <p>할일</p>
-      </FooterButton>
-      <FooterButton to="/memo">
-        <img src={IconMemo} alt="todolist" />
-        <p>메모</p>
-      </FooterButton>
-      <FooterButton to="/weather">
-        <img src={IconWeather} alt="todolist" />
-        <p>날씨</p>
-      </FooterButton>
-      <FooterButton to="/translate">
-        <img src={IconTrans} alt="todolist" />
-        <p>번역</p>
-      </FooterButton>
-      <FooterButton to="/all">
-        <img src={IconAll} alt="todolist" />
-        <p>전체</p>
-      </FooterButton>
+      {pageList.map(({ path, icon, text }) => {
+        return (
+          <FooterButton to={path} key={path}>
+            <img src={icon} alt={`${path}-icon`} />
+            <p>{text}</p>
+          </FooterButton>
+        );
+      })}
     </FooterLayout>
   );
 }

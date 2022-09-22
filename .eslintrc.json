@@ -4,23 +4,28 @@
     "es2021": true
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-    "plugin:react/recommended",
-    "standard-with-typescript",
     "eslint:recommended",
-    "react-app"
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "overrides": [],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "ecmaFeatures": {
+      "tsx": true
+    },
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "plugins": ["react", "@typescript-eslint"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
-    "@typescript-eslint/interface-name-prefix": "on",
-    "@typescript-eslint/explicit-function-return-type": "on",
-    "@typescript-eslint/explicit-module-boundary-types": "on",
-    "@typescript-eslint/no-explicit-any": "on"
+    "no-console": "error",
+    "react/react-in-jsx-scope": "off"
   }
 }
