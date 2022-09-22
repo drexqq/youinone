@@ -32,8 +32,9 @@ function TodoList() {
     { id: 14, content: 'test14', isChecked: false },
   ];
   const [todos, setTodos] = useState<ITodoItem[]>([]);
+  const [addMode, setAddMode] = useState<Boolean>(false);
   /**
-   * @param id number 투두리스트의 체크표시 클릭시 발생 @param0
+   * @param id number 투두리스트의 체크표시 클릭시 발생
    */
   const onClickChecked = (id: number) => {
     setTodos(
@@ -43,13 +44,27 @@ function TodoList() {
       }),
     );
   };
-
+  /**
+   * @param id number 투두리스트 아이템 삭제
+   */
   const deleteItem = (id: number) => {
     setTodos(
       todos.filter((todo) => {
         return todo.id != id;
       }),
     );
+  };
+  /**
+   * @param e  투두리스트 아이템 추가
+   */
+  const addItem = (e: React.MouseEvent<HTMLElement>) => {
+    let item = e.target as HTMLElement;
+    if (item.nodeName === 'P') {
+      let target = e.target as HTMLElement;
+      item = target.parentElement as HTMLElement;
+    }
+    item.classList.add('add');
+    setAddMode(true);
   };
 
   useEffect(() => {
@@ -60,6 +75,26 @@ function TodoList() {
     <>
       <ProjectTitle name="ToDoList" />
       <TodoWrap>
+        <Flicking
+          align={'next'}
+          circular={true}
+          duration={100}
+          style={{ width: '100%', maxHeight: '56px' }}
+        >
+          <TodoItem onClick={addItem}>
+            <p style={{ color: '#ccc' }}>+ 할 일 추가</p>
+            <div className="add-input-box">
+              <div>
+                <IconBox src={TodoYet} alt="todo-yet" />
+                <CheckBox className="input-checkbox" type="checkbox" />
+              </div>
+              <div className="content">
+                <input type="text" placeholder="add what todo !" />
+              </div>
+            </div>
+          </TodoItem>
+          {addMode ? <DeleteBox src={IconDelete} alt="delete" /> : <></>}
+        </Flicking>
         {todos.map(({ id, content, isChecked }: ITodoItem) => {
           return (
             <li key={id} style={{ width: '100%', height: '56px' }}>
@@ -71,7 +106,10 @@ function TodoList() {
               >
                 <TodoItem>
                   <div onClick={() => onClickChecked(id)}>
-                    <IconBox src={isChecked ? TodoDone : TodoYet} alt="todo-yet" />
+                    <IconBox
+                      src={isChecked ? TodoDone : TodoYet}
+                      alt="todo-yet"
+                    />
                     <CheckBox
                       className="input-checkbox"
                       type="checkbox"
@@ -79,7 +117,11 @@ function TodoList() {
                     />
                   </div>
                   <div className="content">
-                    <input type="text" defaultValue={content} readOnly={isChecked ? true : false} />
+                    <input
+                      type="text"
+                      defaultValue={content}
+                      readOnly={isChecked ? true : false}
+                    />
                   </div>
                 </TodoItem>
                 <DeleteBox
@@ -122,6 +164,22 @@ const TodoItem = styled.div`
   gap: 0.5rem;
   border-radius: 10px;
   border: 1px solid #eee;
+  justify-content: center;
+  .add-input-box {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  &.add {
+    p {
+      display: none;
+    }
+    .add-input-box {
+      display: flex;
+      width: 100%;
+    }
+  }
+
   .content {
     width: calc(100% - 1.25rem);
     height: 100%;
