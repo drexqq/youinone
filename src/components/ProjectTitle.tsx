@@ -1,13 +1,15 @@
-import React from 'react';
+import styled from 'styled-components';
+
 interface IProjectTitle {
-    name: string
+  name: string;
 }
 
-function ProjectTitle ({ name }: IProjectTitle) {
-
-    return (
-        <h2>{name}</h2>
-    )
+function ProjectTitle({ name }: IProjectTitle) {
+  return <TitleLayout>{name}</TitleLayout>;
 }
 
-export default ProjectTitle
+export default ProjectTitle;
+
+const TitleLayout = styled.h2`
+  ${({ theme }) => theme.font.P_TITLE};
+`;

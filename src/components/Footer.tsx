@@ -48,7 +48,7 @@ const FooterLayout = styled.footer`
 
 const FooterButton = styled(Link)`
   flex-basis: 20%;
-  padding-top: 15px;
+  padding-top: 16px;
   text-align: center;
   img {
     max-width: 25px;
@@ -56,6 +56,6 @@ const FooterButton = styled(Link)`
   }
   p {
     padding-top: 4px;
-    font-size: 0.875rem;
+    ${({ theme }) => theme.font.FOOTER_CSS};
   }
 `;

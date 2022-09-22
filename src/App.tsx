@@ -1,14 +1,7 @@
-import GlobalStyle from './styles/GlobalStyle';
-import ProjectRouter from './projects/ProjectRouter'
+import ProjectRouter from './projects/ProjectRouter';
 
 function App() {
-  
-  return (
-    <>
-      <GlobalStyle/ >
-      <ProjectRouter />
-    </>
-  )
+  return <ProjectRouter />;
 }
 
-export default App
+export default App;

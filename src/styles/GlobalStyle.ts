@@ -11,7 +11,7 @@ ${reset}
 }
 
 body{
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Noto Sans KR',sans-serif;
   font-size: 16px;
   overflow: hidden;
 }
