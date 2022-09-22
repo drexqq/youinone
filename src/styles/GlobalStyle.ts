@@ -7,6 +7,7 @@ ${reset}
 * {
   box-sizing: border-box; 
   outline: none;
+  color: #333333;
 }
 
 body{
@@ -18,6 +19,11 @@ body{
 img{
   width: 100%;
   height: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: #333333;
 }
 
 /* input 기본 스타일 초기화 */
