@@ -32,7 +32,7 @@ function TodoList() {
     { id: 14, content: 'test14', isChecked: false },
   ];
   const [todos, setTodos] = useState<ITodoItem[]>([]);
-  const [addMode, setAddMode] = useState<Boolean>(false);
+  const [addMode, setAddMode] = useState<boolean>(false);
   /**
    * @param id number 투두리스트의 체크표시 클릭시 발생
    */
@@ -60,7 +60,7 @@ function TodoList() {
   const addItem = (e: React.MouseEvent<HTMLElement>) => {
     let item = e.target as HTMLElement;
     if (item.nodeName === 'P') {
-      let target = e.target as HTMLElement;
+      const target = e.target as HTMLElement;
       item = target.parentElement as HTMLElement;
     }
     item.classList.add('add');
