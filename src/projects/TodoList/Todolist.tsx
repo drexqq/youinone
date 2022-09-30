@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+
 import ProjectTitle from '../../components/ProjectTitle';
 import IconDelete from '../../assets/todolist/delete.svg';
 import TodoYet from '../../assets/todolist/todo-yet.svg';
@@ -15,22 +17,6 @@ interface ITodoItem {
 }
 
 function TodoList() {
-  const dummyTodos = [
-    { id: 1, content: 'test1', isChecked: false },
-    { id: 2, content: 'test2', isChecked: false },
-    { id: 3, content: 'test3', isChecked: true },
-    { id: 4, content: 'test4', isChecked: false },
-    { id: 5, content: 'test5', isChecked: true },
-    { id: 6, content: 'test6', isChecked: false },
-    { id: 7, content: 'test7', isChecked: false },
-    { id: 8, content: 'test8', isChecked: false },
-    { id: 9, content: 'test9', isChecked: false },
-    { id: 10, content: 'test10', isChecked: false },
-    { id: 11, content: 'test11', isChecked: false },
-    { id: 12, content: 'test12', isChecked: false },
-    { id: 13, content: 'test13', isChecked: false },
-    { id: 14, content: 'test14', isChecked: false },
-  ];
   const [todos, setTodos] = useState<ITodoItem[]>([]);
   const [addMode, setAddMode] = useState<boolean>(false);
   /**
@@ -67,8 +53,14 @@ function TodoList() {
     setAddMode(true);
   };
 
+  const getTodoItems = async (): Promise<void> => {
+    await axios.get('https://api.youinone.life/todolist').then(({ data }) => {
+      setTodos(data.body.Items);
+    });
+  };
+
   useEffect(() => {
-    setTodos(dummyTodos);
+    getTodoItems();
   }, []);
 
   return (

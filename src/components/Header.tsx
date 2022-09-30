@@ -1,10 +1,13 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { HEADER_HEIGHT } from '../consts/DesignConst';
 
 function Header() {
   return (
     <HeaderLayout>
-      <div className="logo">THIS IS LOGO</div>
+      <Link to={'/'} className="logo">
+        THIS IS LOGO
+      </Link>
     </HeaderLayout>
   );
 }

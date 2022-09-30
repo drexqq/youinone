@@ -53,7 +53,11 @@ function Footer() {
     <FooterLayout>
       {pageList.map(({ path, icon, text }) => {
         return (
-          <FooterButton to={path} key={path}>
+          <FooterButton
+            to={path}
+            key={path}
+            className={`/${page}` === path ? 'active' : ''}
+          >
             <img src={icon} alt={`${path}-icon`} />
             <p>{text}</p>
           </FooterButton>
@@ -74,12 +78,19 @@ const FooterButton = styled(Link)`
   flex-basis: 20%;
   padding-top: 16px;
   text-align: center;
+  color: #adadad;
   img {
     max-width: 25px;
     height: auto;
   }
+  &.active {
+    p {
+      color: #333333;
+    }
+  }
   p {
     padding-top: 4px;
     ${({ theme }) => theme.font.FOOTER_CSS};
+    color: inherit;
   }
 `;
