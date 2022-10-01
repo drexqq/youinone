@@ -10,6 +10,9 @@ import TodoDone from '../../assets/todolist/todo-done.svg';
 import Flicking from '@egjs/react-flicking';
 import '@egjs/react-flicking/dist/flicking.css';
 
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 interface ITodoItem {
   id: number;
   content: string;
@@ -87,46 +90,56 @@ function TodoList() {
           </TodoItem>
           {addMode ? <DeleteBox src={IconDelete} alt="delete" /> : <></>}
         </Flicking>
-        {todos.map(({ id, content, isChecked }: ITodoItem) => {
-          return (
-            <li key={id} style={{ width: '100%', height: '56px' }}>
-              <Flicking
-                align={'next'}
-                circular={true}
-                duration={100}
-                style={{ width: '100%', maxHeight: '56px' }}
-              >
-                <TodoItem>
-                  <div onClick={() => onClickChecked(id)}>
-                    <IconBox
-                      src={isChecked ? TodoDone : TodoYet}
-                      alt="todo-yet"
+
+        {todos.length > 0
+          ? todos.map(({ id, content, isChecked }: ITodoItem) => {
+              return (
+                <li key={id} style={{ width: '100%', height: '56px' }}>
+                  <Flicking
+                    align={'next'}
+                    circular={true}
+                    duration={100}
+                    style={{ width: '100%', maxHeight: '56px' }}
+                  >
+                    <TodoItem>
+                      <div onClick={() => onClickChecked(id)}>
+                        <IconBox
+                          src={isChecked ? TodoDone : TodoYet}
+                          alt="todo-yet"
+                        />
+                        <CheckBox
+                          className="input-checkbox"
+                          type="checkbox"
+                          defaultChecked={isChecked}
+                        />
+                      </div>
+                      <div className="content">{content}</div>
+                    </TodoItem>
+                    <DeleteBox
+                      src={IconDelete}
+                      alt="delete"
+                      onClick={() => {
+                        deleteItem(id);
+                      }}
                     />
-                    <CheckBox
-                      className="input-checkbox"
-                      type="checkbox"
-                      defaultChecked={isChecked}
-                    />
-                  </div>
-                  <div className="content">
-                    <input
-                      type="text"
-                      defaultValue={content}
-                      readOnly={isChecked ? true : false}
-                    />
-                  </div>
-                </TodoItem>
-                <DeleteBox
-                  src={IconDelete}
-                  alt="delete"
-                  onClick={() => {
-                    deleteItem(id);
-                  }}
-                />
-              </Flicking>
-            </li>
-          );
-        })}
+                  </Flicking>
+                </li>
+              );
+            })
+          : Array(3)
+              .fill(0)
+              .map(() => {
+                return (
+                  <TodoItem>
+                    <Skeleton width={24} height={24} circle={true}></Skeleton>
+                    <div className="content">
+                      <Skeleton
+                        style={{ display: 'block', height: '100%' }}
+                      ></Skeleton>
+                    </div>
+                  </TodoItem>
+                );
+              })}
       </TodoWrap>
     </>
   );
@@ -175,12 +188,8 @@ const TodoItem = styled.div`
   .content {
     width: calc(100% - 1.25rem);
     height: 100%;
-    input {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      ${({ theme }) => theme.font.TODO_ITEM};
-    }
+    line-height: 1.3;
+    ${({ theme }) => theme.font.TODO_ITEM};
   }
 `;
 const IconBox = styled.img`
