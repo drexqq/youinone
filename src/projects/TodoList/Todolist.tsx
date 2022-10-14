@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
 import ProjectTitle from '../../components/ProjectTitle';
 import IconDelete from '../../assets/todolist/delete.svg';
+import IconAdd from '../../assets/todolist/add.svg';
 import TodoYet from '../../assets/todolist/todo-yet.svg';
 import TodoDone from '../../assets/todolist/todo-done.svg';
+import ArrowDown from '../../assets/icons/arrow-down-grey.svg';
+
+import { FOOTER_HEIGHT } from '../../consts/DesignConst';
+
+import AutoHeightTextArea from '../../components/AutoHeightTextArea';
 
 import Flicking from '@egjs/react-flicking';
 import '@egjs/react-flicking/dist/flicking.css';
@@ -19,11 +25,22 @@ interface ITodoItem {
   isChecked: boolean;
 }
 
+interface IAddTodoItem {
+  userId: number;
+  content: string;
+}
+
 function TodoList() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [todos, setTodos] = useState<ITodoItem[]>([]);
   const [addMode, setAddMode] = useState<boolean>(false);
+  const [addContent, setAddContent] = useState<string>('');
+
+  const addFlickRef = useRef<Flicking>(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
   /**
-   * @param id number 투두리스트의 체크표시 클릭시 발생
+   * @param {number} id 투두리스트의 id
+   * @description 투두리스트의 체크표시 클릭
    */
   const onClickChecked = (id: number) => {
     setTodos(
@@ -34,7 +51,26 @@ function TodoList() {
     );
   };
   /**
-   * @param id number 투두리스트 아이템 삭제
+   * @param {string} content 투두리스트의 내용
+   * @description 투두리스트의 아이템 추가
+   */
+  const addItem = async ({ userId, content }: IAddTodoItem): Promise<void> => {
+    await axios
+      .post('https://api.youinone.life/todolist', { userId, content })
+      .then(() => {
+        setAddMode(false);
+        setAddContent('');
+        if (textRef.current) {
+          textRef.current.value = '';
+        }
+        getTodoItems();
+      })
+      .catch()
+      .finally();
+  };
+  /**
+   * @param {number} id 투두리스트의 id
+   * @description 투두리스트 아이템 삭제
    */
   const deleteItem = (id: number) => {
     setTodos(
@@ -44,62 +80,130 @@ function TodoList() {
     );
   };
   /**
-   * @param e  투두리스트 아이템 추가
+   * @param {string} value 투두리스트의 수정할 내용
+   * @description 투두리스트의 내용 수정하기
    */
-  const addItem = (e: React.MouseEvent<HTMLElement>) => {
-    let item = e.target as HTMLElement;
-    if (item.nodeName === 'P') {
-      const target = e.target as HTMLElement;
-      item = target.parentElement as HTMLElement;
-    }
-    item.classList.add('add');
-    setAddMode(true);
+  const setItem = (id: number, value: string) => {
+    setTodos(
+      todos.filter((todo) => {
+        if (todo.id === id) {
+          todo.content = value;
+        }
+        return todo;
+      }),
+    );
   };
-
+  /**
+   * @description 투두리스트 추가 버튼 상태 관리
+   */
+  const initAddItemBtn = () => {
+    if (addFlickRef.current) {
+      addFlickRef.current.prev();
+    }
+    if (textRef.current) {
+      textRef.current.value = '';
+    }
+    setAddContent('');
+    setAddMode(false);
+  };
+  /**
+   * @description 투두리스트 아이템 받아오기
+   */
   const getTodoItems = async (): Promise<void> => {
     await axios.get('https://api.youinone.life/todolist').then(({ data }) => {
       setTodos(data.body.Items);
+      setIsLoading(false);
     });
   };
 
   useEffect(() => {
     getTodoItems();
   }, []);
-
   return (
     <>
       <ProjectTitle name="ToDoList" />
+      <Month>
+        <span>10월</span>
+        <button>
+          <img src={ArrowDown} alt="arrow-down" />
+        </button>
+      </Month>
+      <DayWrap>
+        {Array(30)
+          .fill(0)
+          .map((_, i) => {
+            return (
+              <Day key={i} className={i == 0 ? 'active' : ''}>
+                {i + 1}
+              </Day>
+            );
+          })}
+      </DayWrap>
       <TodoWrap>
         <Flicking
-          align={'next'}
-          circular={true}
+          ref={addFlickRef}
+          align="center"
+          noPanelStyleOverride={false}
+          bound={true}
+          circular={false}
+          moveType="strict"
           duration={100}
-          style={{ width: '100%', maxHeight: '56px' }}
+          useResizeObserver={true}
+          style={{ width: '100%' }}
         >
-          <TodoItem onClick={addItem}>
-            <p style={{ color: '#ccc' }}>+ 할 일 추가</p>
+          {addMode && (
+            <AddBox
+              src={IconAdd}
+              onClick={() => addItem({ userId: 0, content: addContent })}
+              alt="add"
+            />
+          )}
+          <TodoItem
+            onClick={() => setAddMode(true)}
+            className={addMode ? 'add' : ''}
+          >
+            <p
+              style={{
+                color: '#ccc',
+                textAlign: 'center',
+                fontSize: '20px',
+                lineHeight: '1rem',
+              }}
+            >
+              +
+            </p>
             <div className="add-input-box">
-              <div>
-                <IconBox src={TodoYet} alt="todo-yet" />
-                <CheckBox className="input-checkbox" type="checkbox" />
-              </div>
+              <IconBox src={TodoYet} alt="todo-yet" />
+              <CheckBox className="input-checkbox" type="checkbox" />
               <div className="content">
-                <input type="text" placeholder="add what todo !" />
+                <AutoHeightTextArea
+                  ref={textRef}
+                  id={-1}
+                  value={addContent}
+                  setItem={setItem}
+                  setAddContent={setAddContent}
+                />
               </div>
             </div>
           </TodoItem>
-          {addMode ? <DeleteBox src={IconDelete} alt="delete" /> : <></>}
+          {addMode && (
+            <DeleteBox src={IconDelete} onClick={initAddItemBtn} alt="delete" />
+          )}
         </Flicking>
 
-        {todos.length > 0
+        {!isLoading
           ? todos.map(({ id, content, isChecked }: ITodoItem) => {
               return (
-                <li key={id} style={{ width: '100%', height: '56px' }}>
+                <li key={id} style={{ width: '100%', height: '48px' }}>
                   <Flicking
-                    align={'next'}
-                    circular={true}
+                    align="center"
+                    noPanelStyleOverride={false}
+                    bound={true}
+                    circular={false}
+                    moveType="strict"
                     duration={100}
-                    style={{ width: '100%', maxHeight: '56px' }}
+                    useResizeObserver={true}
+                    style={{ width: '100%', maxHeight: '48px' }}
                   >
                     <TodoItem>
                       <div onClick={() => onClickChecked(id)}>
@@ -113,7 +217,21 @@ function TodoList() {
                           defaultChecked={isChecked}
                         />
                       </div>
-                      <div className="content">{content}</div>
+                      <div className="content">
+                        {isChecked ? (
+                          content
+                        ) : (
+                          <AutoHeightTextArea
+                            ref={null}
+                            id={id}
+                            value={content}
+                            setItem={setItem}
+                            setAddContent={() => {
+                              /**/
+                            }}
+                          />
+                        )}
+                      </div>
                     </TodoItem>
                     <DeleteBox
                       src={IconDelete}
@@ -126,12 +244,12 @@ function TodoList() {
                 </li>
               );
             })
-          : Array(3)
+          : Array(3) // For Skeleton UI
               .fill(0)
-              .map(() => {
+              .map((_, i) => {
                 return (
-                  <TodoItem>
-                    <Skeleton width={24} height={24} circle={true}></Skeleton>
+                  <TodoItem key={i}>
+                    <Skeleton width={16} height={16} circle={true}></Skeleton>
                     <div className="content">
                       <Skeleton
                         style={{ display: 'block', height: '100%' }}
@@ -149,26 +267,23 @@ const TodoWrap = styled.ul`
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
   gap: 0.625rem 0;
-  height: calc(100% - 60px);
+  height: calc(100% - ${FOOTER_HEIGHT}px - 1.25rem);
   overflow: scroll;
-
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  ${({ theme }) => theme.scrollbar.HIDE};
 `;
 const TodoItem = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 3.5rem;
-  padding: 1rem;
+  min-height: 3rem;
+  padding: 0.925rem;
   gap: 0.5rem;
   border-radius: 10px;
-  border: 1px solid #eee;
+  border: ${(props) =>
+    props.role === 'add' ? '1px dashed #eee' : '1px solid #eee'};
   justify-content: center;
   .add-input-box {
     display: none;
@@ -184,28 +299,74 @@ const TodoItem = styled.div`
       width: 100%;
     }
   }
-
   .content {
     width: calc(100% - 1.25rem);
     height: 100%;
-    line-height: 1.3;
     ${({ theme }) => theme.font.TODO_ITEM};
+    input {
+      width: 100%;
+      font: inherit;
+    }
   }
 `;
 const IconBox = styled.img`
-  width: 1.5rem;
+  width: 1rem;
   height: auto;
+  vertical-align: bottom;
 `;
 const CheckBox = styled.input`
   display: none;
 `;
 const DeleteBox = styled.img`
-  width: 56px;
+  width: 48px;
   margin-left: 10px;
   height: auto;
-  max-height: 56px;
+  max-height: 48px;
   background-color: #ff8181;
   border-radius: 10px;
+`;
+const AddBox = styled.img`
+  width: 48px;
+  margin-right: 10px;
+  height: auto;
+  max-height: 48px;
+  background-color: #ff8181;
+  border-radius: 10px;
+`;
+
+const Month = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 20px;
+  ${({ theme }) => theme.font.BOLD};
+  span {
+    margin-right: 7px;
+  }
+`;
+
+const DayWrap = styled.div`
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0 10px;
+  overflow-x: scroll;
+  ${({ theme }) => theme.scrollbar.HIDE};
+`;
+
+const Day = styled.span`
+  cursor: pointer;
+  ${({ theme }) => theme.font.MEDIUM};
+  font-size: 14px;
+  text-align: center;
+  color: #adadad;
+  line-height: 1rem;
+  min-width: 1rem;
+  min-height: 1rem;
+  max-width: 1rem;
+  max-height: 1rem;
+  &.active {
+    color: #ff7b00;
+  }
 `;
 
 export default TodoList;

@@ -20,8 +20,8 @@ function ProjectRouter() {
             <Route path="*" element={<NotFound />}></Route>
           </Routes>
         </PageLayout>
-        <Footer />
       </Layout>
+      <Footer />
     </BrowserRouter>
   );
 }

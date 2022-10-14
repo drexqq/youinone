@@ -8,12 +8,12 @@ import IconTodo from '../assets/icons/todo.svg';
 import IconMemo from '../assets/icons/memo.svg';
 import IconWeather from '../assets/icons/weather.svg';
 import IconTrans from '../assets/icons/translate.svg';
-import IconAll from '../assets/icons/all.svg';
+import IconMenu from '../assets/icons/menu.svg';
 import IconTodoActive from '../assets/icons/todo-active.svg';
 import IconMemoActive from '../assets/icons/memo-active.svg';
 import IconWeatherActive from '../assets/icons/weather-active.svg';
 import IconTransActive from '../assets/icons/translate-active.svg';
-import IconAllActive from '../assets/icons/all-active.svg';
+import IconMenuActive from '../assets/icons/menu-active.svg';
 
 function Footer() {
   const [page, setPage] = useState<string>('');
@@ -42,7 +42,7 @@ function Footer() {
     },
     {
       path: '/all',
-      icon: page === 'all' ? IconAllActive : IconAll,
+      icon: page === 'all' ? IconMenuActive : IconMenu,
       text: '전체',
     },
   ];
@@ -72,24 +72,27 @@ const FooterLayout = styled.footer`
   display: flex;
   border-top: 1px solid #eee;
   height: ${FOOTER_HEIGHT}px;
+  position: relative;
+  z-index: 9999;
+  background-color: #fff;
 `;
 
 const FooterButton = styled(Link)`
   flex-basis: 20%;
-  padding-top: 16px;
+  padding-top: 10px;
   text-align: center;
   color: #adadad;
   img {
-    max-width: 25px;
+    max-width: 24px;
     height: auto;
   }
   &.active {
     p {
-      color: #333333;
+      color: #ff7b00;
     }
   }
   p {
-    padding-top: 4px;
+    padding-top: 5px;
     ${({ theme }) => theme.font.FOOTER_CSS};
     color: inherit;
   }
