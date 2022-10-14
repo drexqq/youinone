@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { HEADER_HEIGHT, FOOTER_HEIGHT } from '../consts/DesignConst';
+import { FOOTER_HEIGHT, PAGE_TITLE_PADDING } from '../consts/DesignConst';
 
 export const Layout = styled.div`
   padding: 0 1rem;
@@ -7,5 +7,6 @@ export const Layout = styled.div`
 `;
 
 export const PageLayout = styled.div`
-  height: calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px);
+  padding-top: ${PAGE_TITLE_PADDING}px;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
 `;
