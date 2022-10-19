@@ -20,13 +20,15 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 interface ITodoItem {
-  id: number;
+  ID: number;
+  userID: number;
   content: string;
   isChecked: boolean;
+  date: string;
 }
 
 interface IAddTodoItem {
-  userId: number;
+  userID: number;
   content: string;
 }
 
@@ -39,13 +41,13 @@ function TodoList() {
   const addFlickRef = useRef<Flicking>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
   /**
-   * @param {number} id 투두리스트의 id
+   * @param {number} ID 투두리스트의 ID
    * @description 투두리스트의 체크표시 클릭
    */
-  const onClickChecked = (id: number) => {
+  const onClickChecked = (ID: number) => {
     setTodos(
       todos.map((todo): ITodoItem => {
-        if (todo.id === id) todo.isChecked = !todo.isChecked;
+        if (todo.ID === ID) todo.isChecked = !todo.isChecked;
         return todo;
       }),
     );
@@ -54,9 +56,9 @@ function TodoList() {
    * @param {string} content 투두리스트의 내용
    * @description 투두리스트의 아이템 추가
    */
-  const addItem = async ({ userId, content }: IAddTodoItem): Promise<void> => {
+  const addItem = async ({ userID, content }: IAddTodoItem): Promise<void> => {
     await axios
-      .post('https://api.youinone.life/todolist', { userId, content })
+      .post('https://api.youinone.life/todolist', { userID, content })
       .then(() => {
         setAddMode(false);
         setAddContent('');
@@ -65,28 +67,38 @@ function TodoList() {
         }
         getTodoItems();
       })
-      .catch()
+      .catch((e) => {
+        alert(`Create Error ! ${e}`);
+      })
       .finally();
   };
   /**
-   * @param {number} id 투두리스트의 id
+   * @param {number} ID 투두리스트의 ID
    * @description 투두리스트 아이템 삭제
    */
-  const deleteItem = (id: number) => {
-    setTodos(
-      todos.filter((todo) => {
-        return todo.id != id;
-      }),
-    );
+  const deleteItem = async (ID: number): Promise<void> => {
+    await axios
+      .delete(`https://api.youinone.life/todolist/${ID}`)
+      .then(() => {
+        setTodos(
+          todos.filter((todo) => {
+            return todo.ID != ID;
+          }),
+        );
+        alert('Delete Success !');
+      })
+      .catch((e) => {
+        alert(`Delete Error ! ${e}`);
+      });
   };
   /**
    * @param {string} value 투두리스트의 수정할 내용
    * @description 투두리스트의 내용 수정하기
    */
-  const setItem = (id: number, value: string) => {
+  const setItem = (ID: number, value: string) => {
     setTodos(
       todos.filter((todo) => {
-        if (todo.id === id) {
+        if (todo.ID === ID) {
           todo.content = value;
         }
         return todo;
@@ -111,7 +123,7 @@ function TodoList() {
    */
   const getTodoItems = async (): Promise<void> => {
     await axios.get('https://api.youinone.life/todolist').then(({ data }) => {
-      setTodos(data.body.Items);
+      setTodos(data.body);
       setIsLoading(false);
     });
   };
@@ -154,7 +166,7 @@ function TodoList() {
           {addMode && (
             <AddBox
               src={IconAdd}
-              onClick={() => addItem({ userId: 0, content: addContent })}
+              onClick={() => addItem({ userID: 0, content: addContent })}
               alt="add"
             />
           )}
@@ -178,7 +190,7 @@ function TodoList() {
               <div className="content">
                 <AutoHeightTextArea
                   ref={textRef}
-                  id={-1}
+                  ID={-1}
                   value={addContent}
                   setItem={setItem}
                   setAddContent={setAddContent}
@@ -192,9 +204,9 @@ function TodoList() {
         </Flicking>
 
         {!isLoading
-          ? todos.map(({ id, content, isChecked }: ITodoItem) => {
+          ? todos.map(({ ID, content, isChecked }: ITodoItem) => {
               return (
-                <li key={id} style={{ width: '100%', height: '48px' }}>
+                <li key={ID} style={{ width: '100%', height: '48px' }}>
                   <Flicking
                     align="center"
                     noPanelStyleOverride={false}
@@ -206,7 +218,7 @@ function TodoList() {
                     style={{ width: '100%', maxHeight: '48px' }}
                   >
                     <TodoItem>
-                      <div onClick={() => onClickChecked(id)}>
+                      <div onClick={() => onClickChecked(ID)}>
                         <IconBox
                           src={isChecked ? TodoDone : TodoYet}
                           alt="todo-yet"
@@ -223,7 +235,7 @@ function TodoList() {
                         ) : (
                           <AutoHeightTextArea
                             ref={null}
-                            id={id}
+                            ID={ID}
                             value={content}
                             setItem={setItem}
                             setAddContent={() => {
@@ -237,7 +249,7 @@ function TodoList() {
                       src={IconDelete}
                       alt="delete"
                       onClick={() => {
-                        deleteItem(id);
+                        deleteItem(ID);
                       }}
                     />
                   </Flicking>

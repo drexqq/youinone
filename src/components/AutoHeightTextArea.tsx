@@ -2,14 +2,14 @@ import { useCallback, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 
 interface ITextAreaProps {
-  id: number;
+  ID: number;
   value: string;
-  setItem(id: number, value: string): void;
+  setItem(ID: number, value: string): void;
   setAddContent(content: string): void;
 }
 
 function AutoHeightTextArea(
-  { id, value, setItem, setAddContent }: ITextAreaProps,
+  { ID, value, setItem, setAddContent }: ITextAreaProps,
   ref: HTMLTextAreaElement | any,
 ) {
   const textRef = ref ? ref : useRef<HTMLTextAreaElement>(null);
@@ -18,8 +18,8 @@ function AutoHeightTextArea(
       if (textRef.current.scrollHeight < 32) {
         textRef.current.style.height = textRef.current.scrollHeight + 'px';
       }
-      if (id !== -1) {
-        setItem(id, textRef.current.value);
+      if (ID !== -1) {
+        setItem(ID, textRef.current.value);
       } else {
         setAddContent(textRef.current.value);
       }
